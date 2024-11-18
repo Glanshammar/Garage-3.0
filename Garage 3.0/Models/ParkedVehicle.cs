@@ -8,5 +8,6 @@
         public string Brand { get; set; }
         public string Color { get; set; }
         public VehicleType VehicleType { get; set; }
+        public ParkingSpot ParkingSpot { get; set; }
     }
 }
