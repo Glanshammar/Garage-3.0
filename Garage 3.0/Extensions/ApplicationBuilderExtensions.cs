@@ -14,12 +14,13 @@ namespace Garage_3._0.Extensions
                 try
                 {
                     await SeedData.Init(context, services);
+                    Console.WriteLine("Seed data initialized successfully.");
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-
-                    throw;
+                    Console.WriteLine($"Exception during seed data initialization: {ex.Message}");
                 }
+
             }
             return app;
         }
