@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Garage_3._0.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -18,7 +18,13 @@ namespace Garage_3._0.Data
 
             builder.Entity<VehicleType>()
                 .HasKey(t => new { t.Name });
-            
+
+           builder.Entity<ApplicationUser>()
+          .HasIndex(u => u.PersonalNumber)
+          .IsUnique();
+
         }
+
+      
     }
 }
