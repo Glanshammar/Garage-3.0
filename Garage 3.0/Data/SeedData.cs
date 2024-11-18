@@ -24,9 +24,9 @@ namespace Garage_3._0.Data
 
             await AddRolesAsync(roleNames);
 
-            // Lägg till användare med personnummer
-            var admin = await AddAccountAsync(adminEmail, "Sabah", "Saleh", "P@55w.rd", "123456-7890");
-            var user = await AddAccountAsync(userEmail, "Max", "Son", "Pa55w.rd", "987654-3210");
+           
+            var admin = await AddAccountAsync(adminEmail, "AdminName", "AdminLName", "Admin2014-", "123456-7890");
+            var user = await AddAccountAsync(userEmail, "UserName", "UserLname", "User2024-", "987654-3210");
 
             await AddUserToRoleAsync(admin, "Admin");
             await AddUserToRoleAsync(user, "User");
@@ -57,7 +57,7 @@ namespace Garage_3._0.Data
         {
             var found = await userManager.FindByEmailAsync(accountEmail);
 
-            if (found != null) return found;
+            if (found != null) return null!;
 
             var user = new ApplicationUser
             {
