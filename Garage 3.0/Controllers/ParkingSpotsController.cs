@@ -8,33 +8,41 @@ using Microsoft.EntityFrameworkCore;
 using Garage_3._0.Data;
 using Garage_3._0.Models;
 using Garage_3._0.Models.ViewModels;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Garage_3._0.Controllers
 {
-    public class ParkedVehiclesController : Controller
+    public class ParkingSpotsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public ParkedVehiclesController(ApplicationDbContext context)
+        public ParkingSpotsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: ParkedVehicles
+        // GET: ParkingSpots
+     
         public async Task<IActionResult> Index()
         {
-            var viewModel = _context.ParkedVehicles.Select(p => new ParkedVehicleIndexViewModel
-            {
-                RegistrationNumber = p.RegistrationNumber,
-                ApplicationUser = p.ApplicationUser,
-                ParkingSpot = p.ParkingSpot,
-                VehicleType = p.VehicleType
-            });
+            var viewModel = _context.ParkingSpots
+                .Select(s => new ParkingSpotViewModel
+                {
+                    Id = s.Id,
+                    SpotNumber = s.SpotNumber,
+                    Size = s.Size,
+                    Location = s.Location,
+                    IsOccupied = s.IsOccupied
+
+                    // AssignedVehicleRegistration = s.IsOccupied ? s.ParkedVehicle.RegistrationNumber : null 
+
+                });
+
             return View(await viewModel.ToListAsync());
         }
 
-        // GET: ParkedVehicles/Details/5
+
+
+        // GET: ParkingSpots/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -42,41 +50,55 @@ namespace Garage_3._0.Controllers
                 return NotFound();
             }
 
-            var parkedVehicle = await _context.ParkedVehicles
+            var parkingSpot = await _context.ParkingSpots
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (parkedVehicle == null)
+            if (parkingSpot == null)
             {
                 return NotFound();
             }
 
-            return View(parkedVehicle);
+            return View(parkingSpot);
         }
 
-        // GET: ParkedVehicles/Create
-        [Authorize(Roles = "Admin,Member,User")]
+        // GET: ParkingSpots/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: ParkedVehicles/Create
+        // POST: ParkingSpots/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Member,User")]
-        public async Task<IActionResult> Create([Bind("Id,RegistrationNumber,Model,Brand,Color")] ParkedVehicle parkedVehicle)
+        public async Task<IActionResult> Create([Bind("Id,SpotNumber,Size,Location,IsOccupied")] ParkingSpot parkingSpot)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(parkedVehicle);
+                _context.Add(parkingSpot);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(parkedVehicle);
+            return View(parkingSpot);
         }
 
-        // GET: ParkedVehicles/Edit/5
+        [HttpPost]
+        public async Task<IActionResult> ToggleStatus(int id)
+        {
+            var spot = await _context.ParkingSpots.FindAsync(id);
+            if (spot == null) return NotFound();
+
+            // Växlar status
+            spot.IsOccupied = !spot.IsOccupied;
+            _context.ParkingSpots.Update(spot);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+
+
+        // GET: ParkingSpots/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -84,22 +106,22 @@ namespace Garage_3._0.Controllers
                 return NotFound();
             }
 
-            var parkedVehicle = await _context.ParkedVehicles.FindAsync(id);
-            if (parkedVehicle == null)
+            var parkingSpot = await _context.ParkingSpots.FindAsync(id);
+            if (parkingSpot == null)
             {
                 return NotFound();
             }
-            return View(parkedVehicle);
+            return View(parkingSpot);
         }
 
-        // POST: ParkedVehicles/Edit/5
+        // POST: ParkingSpots/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,RegistrationNumber,Model,Brand,Color")] ParkedVehicle parkedVehicle)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,SpotNumber,Size,Location,IsOccupied")] ParkingSpot parkingSpot)
         {
-            if (id != parkedVehicle.Id)
+            if (id != parkingSpot.Id)
             {
                 return NotFound();
             }
@@ -108,12 +130,12 @@ namespace Garage_3._0.Controllers
             {
                 try
                 {
-                    _context.Update(parkedVehicle);
+                    _context.Update(parkingSpot);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ParkedVehicleExists(parkedVehicle.Id))
+                    if (!ParkingSpotExists(parkingSpot.Id))
                     {
                         return NotFound();
                     }
@@ -124,10 +146,10 @@ namespace Garage_3._0.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(parkedVehicle);
+            return View(parkingSpot);
         }
 
-        // GET: ParkedVehicles/Delete/5
+        // GET: ParkingSpots/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -135,34 +157,34 @@ namespace Garage_3._0.Controllers
                 return NotFound();
             }
 
-            var parkedVehicle = await _context.ParkedVehicles
+            var parkingSpot = await _context.ParkingSpots
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (parkedVehicle == null)
+            if (parkingSpot == null)
             {
                 return NotFound();
             }
 
-            return View(parkedVehicle);
+            return View(parkingSpot);
         }
 
-        // POST: ParkedVehicles/Delete/5
+        // POST: ParkingSpots/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var parkedVehicle = await _context.ParkedVehicles.FindAsync(id);
-            if (parkedVehicle != null)
+            var parkingSpot = await _context.ParkingSpots.FindAsync(id);
+            if (parkingSpot != null)
             {
-                _context.ParkedVehicles.Remove(parkedVehicle);
+                _context.ParkingSpots.Remove(parkingSpot);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ParkedVehicleExists(int id)
+        private bool ParkingSpotExists(int id)
         {
-            return _context.ParkedVehicles.Any(e => e.Id == id);
+            return _context.ParkingSpots.Any(e => e.Id == id);
         }
     }
 }

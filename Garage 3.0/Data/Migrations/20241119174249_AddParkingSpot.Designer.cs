@@ -4,6 +4,7 @@ using Garage_3._0.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Garage_3._0.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241119174249_AddParkingSpot")]
+    partial class AddParkingSpot
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -174,32 +177,6 @@ namespace Garage_3._0.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ParkingSpots");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            IsOccupied = false,
-                            Location = "North",
-                            Size = "Small",
-                            SpotNumber = "A1"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            IsOccupied = true,
-                            Location = "South",
-                            Size = "Medium",
-                            SpotNumber = "B2"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            IsOccupied = false,
-                            Location = "East",
-                            Size = "Large",
-                            SpotNumber = "C3"
-                        });
                 });
 
             modelBuilder.Entity("Garage_3._0.Models.VehicleType", b =>
@@ -210,20 +187,6 @@ namespace Garage_3._0.Data.Migrations
                     b.HasKey("Name");
 
                     b.ToTable("VehicleType");
-
-                    b.HasData(
-                        new
-                        {
-                            Name = "Car"
-                        },
-                        new
-                        {
-                            Name = "Motorcycle"
-                        },
-                        new
-                        {
-                            Name = "Bus"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
