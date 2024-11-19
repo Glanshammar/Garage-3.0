@@ -14,6 +14,7 @@ namespace Garage_3._0.Models
         [RegularExpression(@"^\d{8}-\d{4}$", ErrorMessage = "Personal number format is incorrect (e.g., YYYYMMDD-XXXX).")]
         public string PersonalNumber { get; set; }
 
+        public ICollection<ParkedVehicle> ParkedVehicles { get; set; }
         public int Age
         {
             get

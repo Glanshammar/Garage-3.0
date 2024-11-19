@@ -4,19 +4,16 @@ using Garage_3._0.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Garage_3._0.Data.Migrations
+namespace Garage_3._0.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241118161726_UpdateAppDbContext")]
-    partial class UpdateAppDbContext
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -113,6 +110,10 @@ namespace Garage_3._0.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Brand")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -137,6 +138,8 @@ namespace Garage_3._0.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("ParkingSpotId");
 
@@ -313,6 +316,12 @@ namespace Garage_3._0.Data.Migrations
 
             modelBuilder.Entity("Garage_3._0.Models.ParkedVehicle", b =>
                 {
+                    b.HasOne("Garage_3._0.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany("ParkedVehicles")
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Garage_3._0.Models.ParkingSpot", "ParkingSpot")
                         .WithMany()
                         .HasForeignKey("ParkingSpotId")
@@ -324,6 +333,8 @@ namespace Garage_3._0.Data.Migrations
                         .HasForeignKey("VehicleTypeName")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ApplicationUser");
 
                     b.Navigation("ParkingSpot");
 
@@ -379,6 +390,11 @@ namespace Garage_3._0.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Garage_3._0.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("ParkedVehicles");
                 });
 
             modelBuilder.Entity("Garage_3._0.Models.VehicleType", b =>
