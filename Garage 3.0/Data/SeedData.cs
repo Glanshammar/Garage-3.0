@@ -18,18 +18,21 @@ namespace Garage_3._0.Data
             roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
             userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
 
-            var roleNames = new[] { "User", "Admin" };
+            var roleNames = new[] { "User", "Admin", "Member" };
             var adminEmail = "admin@admin.com";
             var userEmail = "user@user.com";
+            var memberEmail = "member@member.com";
 
             await AddRolesAsync(roleNames);
 
            
             var admin = await AddAccountAsync(adminEmail, "AdminName", "AdminLName", "Admin2024-", "123456-7990");
             var user = await AddAccountAsync(userEmail, "UserName", "UserLName", "User2024-", "987654-3240");
+            var member = await AddAccountAsync(userEmail, "MemberName", "MemberLName", "Member2024-", "987654-3246");
 
             await AddUserToRoleAsync(admin, "Admin");
             await AddUserToRoleAsync(user, "User");
+            await AddUserToRoleAsync(member, "Member");
         }
 
         private static async Task AddUserToRoleAsync(ApplicationUser user, string roleName)

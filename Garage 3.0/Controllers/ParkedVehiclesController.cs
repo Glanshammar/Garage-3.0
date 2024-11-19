@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Garage_3._0.Data;
 using Garage_3._0.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Garage_3._0.Controllers
 {
+    [Authorize]
     public class ParkedVehiclesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -20,12 +22,14 @@ namespace Garage_3._0.Controllers
         }
 
         // GET: ParkedVehicles
+        [Authorize(Roles = "Admin,Member")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.ParkedVehicles.ToListAsync());
         }
 
         // GET: ParkedVehicles/Details/5
+        [Authorize(Roles = "Admin,Member")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -44,16 +48,16 @@ namespace Garage_3._0.Controllers
         }
 
         // GET: ParkedVehicles/Create
+        [Authorize(Roles = "Admin,Member")]
         public IActionResult Create()
         {
             return View();
         }
 
         // POST: ParkedVehicles/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Member")]
         public async Task<IActionResult> Create([Bind("Id,RegistrationNumber,Model,Brand,Color")] ParkedVehicle parkedVehicle)
         {
             if (ModelState.IsValid)
@@ -66,6 +70,7 @@ namespace Garage_3._0.Controllers
         }
 
         // GET: ParkedVehicles/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -82,10 +87,9 @@ namespace Garage_3._0.Controllers
         }
 
         // POST: ParkedVehicles/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,RegistrationNumber,Model,Brand,Color")] ParkedVehicle parkedVehicle)
         {
             if (id != parkedVehicle.Id)
@@ -117,6 +121,7 @@ namespace Garage_3._0.Controllers
         }
 
         // GET: ParkedVehicles/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -137,6 +142,7 @@ namespace Garage_3._0.Controllers
         // POST: ParkedVehicles/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var parkedVehicle = await _context.ParkedVehicles.FindAsync(id);

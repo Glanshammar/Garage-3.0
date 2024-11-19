@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
 namespace Garage_3._0.Areas.Identity.Pages.Account
 {
@@ -127,6 +128,24 @@ namespace Garage_3._0.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
+
+                // Check that FirstName is not the same as LastName
+                if (Input.FirstName.Equals(Input.LastName, StringComparison.OrdinalIgnoreCase))
+                {
+                    ModelState.AddModelError(string.Empty, "First name cannot be the same as last name.");
+                    return Page();
+                }
+
+                // Check that PersonalNumber is unique
+                var existingUser = await _userManager.Users.SingleOrDefaultAsync(u => u.PersonalNumber == Input.PersonalNumber);
+                if (existingUser != null)
+                {
+                    ModelState.AddModelError(string.Empty, "A user with this personal number already exists.");
+                    return Page();
+                }
+
+
+
                 var user = CreateUser();
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
