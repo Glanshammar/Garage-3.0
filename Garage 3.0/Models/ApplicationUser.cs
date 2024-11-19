@@ -8,6 +8,7 @@ namespace Garage_3._0.Models
         public string LastName { get; set; }
         public string PersonalNumber { get; set; }
 
+        public ICollection<ParkedVehicle> ParkedVehicles { get; set; }
         public int Age
         {
             get
