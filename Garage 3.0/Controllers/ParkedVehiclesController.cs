@@ -52,6 +52,7 @@ namespace Garage_3._0.Controllers
         }
 
         // GET: ParkedVehicles/Create
+        [Authorize(Roles = "Admin,Member,User")]
         public IActionResult Create()
         {
             return View();
@@ -62,6 +63,7 @@ namespace Garage_3._0.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Member,User")]
         public async Task<IActionResult> Create([Bind("Id,RegistrationNumber,Model,Brand,Color")] ParkedVehicle parkedVehicle)
         {
             if (ModelState.IsValid)
