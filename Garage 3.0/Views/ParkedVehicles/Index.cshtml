@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Garage_3._0.Models.ParkedVehicle>
+﻿@model IEnumerable<Garage_3._0.Models.ViewModels.ParkedVehicleIndexViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -16,14 +16,15 @@
                 @Html.DisplayNameFor(model => model.RegistrationNumber)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Model)
+                @Html.DisplayNameFor(model => model.ParkingSpot)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Brand)
+                @Html.DisplayNameFor(model => model.VehicleType)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Color)
+                @Html.DisplayNameFor(model => model.ApplicationUser)
             </th>
+         
             <th></th>
         </tr>
     </thead>
@@ -34,14 +35,15 @@
                 @Html.DisplayFor(modelItem => item.RegistrationNumber)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Model)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Brand)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Color)
-            </td>
+                @Html.DisplayFor(modelItem => item.ParkingSpot)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.VehicleType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ApplicationUser)
+                </td>
+           
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
