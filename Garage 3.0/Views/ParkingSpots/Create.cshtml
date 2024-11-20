@@ -1,37 +1,42 @@
-﻿@model Garage_3._0.Models.ParkingSpot
+﻿@model Garage_3._0.Models.ViewModels.ParkingSpotViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Parking Spot";
 }
 
-<h1>Create</h1>
+<h1>Create Parking Spot</h1>
 
-<h4>ParkingSpot</h4>
+<h4>Parking Spot</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <div class="form-group">
                 <label asp-for="SpotNumber" class="control-label"></label>
                 <input asp-for="SpotNumber" class="form-control" />
                 <span asp-validation-for="SpotNumber" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Size" class="control-label"></label>
                 <input asp-for="Size" class="form-control" />
                 <span asp-validation-for="Size" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Location" class="control-label"></label>
                 <input asp-for="Location" class="form-control" />
                 <span asp-validation-for="Location" class="text-danger"></span>
             </div>
+
             <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsOccupied" /> @Html.DisplayNameFor(model => model.IsOccupied)
-                </label>
+                <input class="form-check-input" asp-for="IsOccupied" />
+                <label class="form-check-label" asp-for="IsOccupied"></label>
+                <span asp-validation-for="IsOccupied" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -44,5 +49,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

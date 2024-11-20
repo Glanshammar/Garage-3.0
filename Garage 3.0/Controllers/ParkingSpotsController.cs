@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Garage_3._0.Data;
 using Garage_3._0.Models;
 using Garage_3._0.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Garage_3._0.Controllers
 {
@@ -61,6 +62,7 @@ namespace Garage_3._0.Controllers
         }
 
         // GET: ParkingSpots/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -70,16 +72,25 @@ namespace Garage_3._0.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,SpotNumber,Size,Location,IsOccupied")] ParkingSpot parkingSpot)
+        public async Task<IActionResult> Create(ParkingSpotViewModel model)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(parkingSpot);
+                var parkingSpot = new ParkingSpot
+                {
+                    SpotNumber = model.SpotNumber,
+                    Size = model.Size,
+                    Location = model.Location,
+                    IsOccupied = model.IsOccupied
+                };
+
+                _context.ParkingSpots.Add(parkingSpot);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(parkingSpot);
+            return View(model);
         }
 
         [HttpPost]
@@ -97,59 +108,52 @@ namespace Garage_3._0.Controllers
         }
 
 
-
-        // GET: ParkingSpots/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var parkingSpot = await _context.ParkingSpots.FindAsync(id);
-            if (parkingSpot == null)
+            if (parkingSpot == null) return NotFound();
+
+            var viewModel = new ParkingSpotViewModel
             {
-                return NotFound();
-            }
-            return View(parkingSpot);
+                Id = parkingSpot.Id,
+                SpotNumber = parkingSpot.SpotNumber,
+                Size = parkingSpot.Size,
+                Location = parkingSpot.Location,
+                IsOccupied = parkingSpot.IsOccupied
+            };
+
+            return View(viewModel);
         }
 
-        // POST: ParkingSpots/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,SpotNumber,Size,Location,IsOccupied")] ParkingSpot parkingSpot)
+        public async Task<IActionResult> Edit(int id, ParkingSpotViewModel model)
         {
-            if (id != parkingSpot.Id)
-            {
-                return NotFound();
-            }
+            if (id != model.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(parkingSpot);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ParkingSpotExists(parkingSpot.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                var parkingSpot = await _context.ParkingSpots.FindAsync(id);
+                if (parkingSpot == null) return NotFound();
+
+                parkingSpot.SpotNumber = model.SpotNumber;
+                parkingSpot.Size = model.Size;
+                parkingSpot.Location = model.Location;
+                parkingSpot.IsOccupied = model.IsOccupied;
+
+                _context.Update(parkingSpot);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(parkingSpot);
+
+            return View(model);
         }
 
+
         // GET: ParkingSpots/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -169,6 +173,7 @@ namespace Garage_3._0.Controllers
 
         // POST: ParkingSpots/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {

@@ -6,7 +6,48 @@
 
 <h1>Parking Spots</h1>
 
-<div class="grid">
+<div>
+    <a asp-action="Create" class="btn btn-success">Create New Parking Spot</a>
+</div>
+
+<table class="table mt-4">
+    <thead>
+        <tr>
+            <th>Spot Number</th>
+            <th>Size</th>
+            <th>Location</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var spot in Model)
+        {
+            <tr>
+                <td>@spot.SpotNumber</td>
+                <td>@spot.Size</td>
+                <td>@spot.Location</td>
+                <td>
+                    @if (spot.IsOccupied)
+                    {
+                        <span class="text-danger">Occupied</span>
+                    }
+                    else
+                    {
+                        <span class="text-success">Available</span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@spot.Id" class="btn btn-info btn-sm">Details</a>
+                    <a asp-action="Edit" asp-route-id="@spot.Id" class="btn btn-primary btn-sm">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@spot.Id" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="grid mt-4">
     @foreach (var spot in Model)
     {
         <div class="spot @(spot.IsOccupied ? "occupied" : "available")"
