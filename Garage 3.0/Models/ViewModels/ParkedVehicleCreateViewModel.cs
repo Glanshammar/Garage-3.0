@@ -24,7 +24,6 @@ namespace Garage_3._0.Models.ViewModels
         [Required(ErrorMessage = "Parking Spot is required.")]
         public int ParkingSpotId { get; set; }
 
-        // Optionally? 
-        public string ApplicationUserId { get; set; }
+      
     }
 }
