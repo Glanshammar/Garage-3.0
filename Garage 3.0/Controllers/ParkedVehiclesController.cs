@@ -8,16 +8,20 @@ using Microsoft.EntityFrameworkCore;
 using Garage_3._0.Data;
 using Garage_3._0.Models;
 using Garage_3._0.Models.ViewModels;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Garage_3._0.Controllers
 {
     public class ParkedVehiclesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager = default!;
 
-        public ParkedVehiclesController(ApplicationDbContext context)
+        public ParkedVehiclesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: ParkedVehicles
@@ -54,6 +58,7 @@ namespace Garage_3._0.Controllers
         // GET: ParkedVehicles/Create
         public IActionResult Create()
         {
+            
             return View();
         }
 
@@ -62,15 +67,31 @@ namespace Garage_3._0.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,RegistrationNumber,Model,Brand,Color")] ParkedVehicle parkedVehicle)
+        public async Task<IActionResult> Create(CreateParkedVehicleViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
+                var currentUser = _context.ApplicationUsers.FirstOrDefault(a => a.Id == _userManager.GetUserId(this.User));
+
+                //ToDo: Make customizable
+                var nextAvailableParkingSpot = _context.ParkingSpots.Where(p => p.Occupied == true).FirstOrDefault();
+                
+                ParkedVehicle parkedVehicle = new ParkedVehicle()
+                {
+                    RegistrationNumber = viewModel.RegistrationNumber,
+                    Brand = viewModel.Brand,
+                    Model = viewModel.Model,
+                    Color = viewModel.Color,
+                    VehicleType = VehicleType.Name,
+                    ParkingSpot = nextAvailableParkingSpot
+                };
+
+
                 _context.Add(parkedVehicle);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(parkedVehicle);
+            return View();
         }
 
         // GET: ParkedVehicles/Edit/5
