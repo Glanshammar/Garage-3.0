@@ -35,7 +35,7 @@ namespace Garage_3._0.Data
             // Seed data for ParkingSpots
             builder.Entity<ParkingSpot>().HasData(
                 new ParkingSpot { Id = 1, SpotNumber = "A1", Size = "Small", Location = "North", IsOccupied = false },
-                new ParkingSpot { Id = 2, SpotNumber = "B2", Size = "Medium", Location = "South", IsOccupied = true },
+                new ParkingSpot { Id = 2, SpotNumber = "B2", Size = "Medium", Location = "South", IsOccupied = false },
                 new ParkingSpot { Id = 3, SpotNumber = "C3", Size = "Large", Location = "East", IsOccupied = false }
             );
 
