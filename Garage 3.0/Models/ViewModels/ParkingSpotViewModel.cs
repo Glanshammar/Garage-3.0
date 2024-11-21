@@ -7,6 +7,8 @@
         public string Size { get; set; }
         public string Location { get; set; }
         public bool IsOccupied { get; set; }
-      //  public string AssignedVehicleRegistration { get; set; }
+        public string AssignedVehicleRegistration { get; set; } 
+        public decimal ParkingCost { get; set; }
+        public string OwnerName { get; set; }
     }
 }

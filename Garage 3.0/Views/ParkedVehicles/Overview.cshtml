@@ -1,0 +1,47 @@
+﻿@model IEnumerable<Garage_3._0.Models.ViewModels.MemberOverviewViewModel>
+
+@{
+    ViewData["Title"] = "Overview";
+}
+
+<h1>Overview</h1>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.MemberId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FullName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NumberOfRegisteredVehicles)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalParkingCost)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.MemberId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NumberOfRegisteredVehicles)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalParkingCost)
+            </td>
+           
+        </tr>
+}
+    </tbody>
+</table>

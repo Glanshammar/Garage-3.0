@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Garage_3._0.Models.ViewModels;
+using System.Reflection.Emit;
 
 namespace Garage_3._0.Data
 {
@@ -27,7 +28,9 @@ namespace Garage_3._0.Data
 
            builder.Entity<ApplicationUser>()
           .HasIndex(u => u.PersonalNumber)
-          .IsUnique();
+            .IsUnique();
+
+
 
 
             // Testdata för ParkingSpots
@@ -48,6 +51,9 @@ namespace Garage_3._0.Data
 
         }
         public DbSet<Garage_3._0.Models.ViewModels.ParkedVehicleCreateViewModel> ParkedVehicleCreateViewModel { get; set; } = default!;
+        public DbSet<Garage_3._0.Models.ViewModels.MemberOverviewViewModel> MemberOverviewViewModel { get; set; } = default!;
+        public DbSet<Garage_3._0.Models.ViewModels.VehicleDetailsViewModel> VehicleDetailsViewModel { get; set; } = default!;
+        public DbSet<Garage_3._0.Models.ViewModels.ParkedVehicleIndexViewModel> ParkedVehicleIndexViewModel { get; set; } = default!;
 
       
     }
