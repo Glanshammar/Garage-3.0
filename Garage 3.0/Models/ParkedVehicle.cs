@@ -31,7 +31,6 @@ namespace Garage_3._0.Models
         public int ParkingSpotId { get; set; } // Add foreign key for ParkingSpot
         public ParkingSpot ParkingSpot { get; set; }
 
-        // Navigational key if you need one, you could add more navigation properties here.
     }
 
 }
