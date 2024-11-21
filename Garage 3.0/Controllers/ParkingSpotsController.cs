@@ -92,6 +92,30 @@ namespace Garage_3._0.Controllers
             }
             return View(model);
         }
+        
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AddVehicle(VehicleInputViewModel vehicleInput)
+        {
+            if (ModelState.IsValid)
+            {
+                var newVehicle = new ParkedVehicle
+                {
+                    RegistrationNumber = vehicleInput.RegistrationNumber,
+                    Model = vehicleInput.Model,
+                    Brand = vehicleInput.Brand,
+                    Color = vehicleInput.Color,
+                    ParkingSpotId = vehicleInput.ParkingSpotId
+                };
+        
+                _context.ParkedVehicles.Add(newVehicle);
+                await _context.SaveChangesAsync();
+        
+                return RedirectToAction("Index");
+            }
+    
+            return View(vehicleInput);
+        }
 
         [HttpPost]
         public async Task<IActionResult> ToggleStatus(int id)
