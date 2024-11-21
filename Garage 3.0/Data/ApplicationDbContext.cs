@@ -1,6 +1,7 @@
 ﻿using Garage_3._0.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Garage_3._0.Models.ViewModels;
 
 namespace Garage_3._0.Data
 {
@@ -14,6 +15,7 @@ namespace Garage_3._0.Data
         public DbSet<ParkedVehicle> ParkedVehicles { get; set; }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<ParkingSpot> ParkingSpots { get; set; }
+        public DbSet<VehicleType> VehicleTypes { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -45,6 +47,7 @@ namespace Garage_3._0.Data
 
 
         }
+        public DbSet<Garage_3._0.Models.ViewModels.ParkedVehicleCreateViewModel> ParkedVehicleCreateViewModel { get; set; } = default!;
 
       
     }

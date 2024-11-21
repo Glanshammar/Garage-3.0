@@ -45,7 +45,7 @@ namespace Garage_3._0
 
             app.UseRouting();
 
-            app.UseAuthorization();
+             app.UseAuthorization();
             app.MapControllerRoute(
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");
