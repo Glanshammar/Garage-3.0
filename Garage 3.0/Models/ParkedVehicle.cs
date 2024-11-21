@@ -8,13 +8,12 @@
         public string Brand { get; set; }
         public string Color { get; set; }
 
-        //Foreign Keys
+        // Foreign keys
         public VehicleType VehicleType { get; set; }
-        public ApplicationUser ApplicationUser {  get; set; }
+        public ApplicationUser ApplicationUser { get; set; }
+        public int? ParkingSpotId { get; set; } // Note: Nullable if a vehicle may not always be parked
         
+        // Navigation property to ParkingSpot
         public ParkingSpot ParkingSpot { get; set; }
-
-        //Navigational key
-
     }
 }
