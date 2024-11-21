@@ -7,7 +7,7 @@ namespace Garage_3._0.Models
         public int Id { get; set; }
 
         [Required]
-        public string SpotNumber { get; set; } // Unik identifierare för plats
+        public string SpotNumber { get; set; } // Unique identifier for the spot
 
         [Required]
         public string Size { get; set; } // Small, Medium, Large
@@ -16,7 +16,7 @@ namespace Garage_3._0.Models
         public string Location { get; set; } 
         public bool IsOccupied { get; set; }
 
-        // Relationship to ParkedVehicle
-        // public ParkedVehicle ParkedVehicle { get; set; }
+        // Navigation property for the parked vehicle
+        public ParkedVehicle ParkedVehicle { get; set; }
     }
 }
