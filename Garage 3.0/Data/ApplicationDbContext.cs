@@ -12,6 +12,7 @@ namespace Garage_3._0.Data
         }
 
         public DbSet<ParkedVehicle> ParkedVehicles { get; set; }
+        public DbSet<ParkingSpot> ParkingSpots { get; set; }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         
         protected override void OnModelCreating(ModelBuilder builder)
@@ -24,6 +25,7 @@ namespace Garage_3._0.Data
            builder.Entity<ApplicationUser>()
           .HasIndex(u => u.PersonalNumber)
           .IsUnique();
+
 
                 
 
