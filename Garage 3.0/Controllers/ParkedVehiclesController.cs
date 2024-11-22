@@ -123,7 +123,12 @@ namespace Garage_3._0.Controllers
                     var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
 
                     // Check if the user is over 18 years old
-                    if (user.Age < 18)
+                    if (user.Age.Years < 18)
+                    {
+                        // Add model error if the user is not allowed to park a vehicle
+                        ModelState.AddModelError("", "Only users over 18 years old can park vehicles.");
+                        return View(vehicleViewModel);
+                    }
                     {
                         // Add model error if the user is not allowed to park a vehicle
                         ModelState.AddModelError("", "Only users over 18 years old can park vehicles.");
