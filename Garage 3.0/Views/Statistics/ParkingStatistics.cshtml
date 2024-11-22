@@ -1,0 +1,98 @@
+﻿@model Garage_3._0.Models.ViewModels.ParkingStatisticsViewModel
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="text-center mb-4">
+                <i class="fas fa-parking"></i> Garage Parking Statistics
+            </h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-pie"></i> Parking Overview
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>Total Parking Spots</strong>
+                            <span class="badge bg-info rounded-pill fs-6">@Model.TotalParkingSpots</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>Occupied Spots</strong>
+                            <div>
+                                <span class="badge bg-danger rounded-pill fs-6">@Model.OccupiedParkingSpots</span>
+                                <small class="text-muted ms-2">(@Model.OccupiedPercentage.ToString("F0")%)</small>
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>Available Spots</strong>
+                            <div>
+                                <span class="badge bg-success rounded-pill fs-6">@Model.AvailableParkingSpots</span>
+                                <small class="text-muted ms-2">(@Model.AvailablePercentage.ToString("F0")%)</small>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-table"></i> Spots by Size
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover align-middle">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Size</th>
+                                    <th>Total</th>
+                                    <th>Occupied</th>
+                                    <th>Available</th>
+                                    <th>Usage</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var sizeStats in Model.SizeStatistics)
+                                {
+                                    var occupancyRate = sizeStats.TotalSpots > 0
+                                    ? ((double)sizeStats.OccupiedSpots / sizeStats.TotalSpots * 100)
+                                    : 0;
+                                    <tr>
+                                        <td><strong>@sizeStats.Size</strong></td>
+                                        <td>@sizeStats.TotalSpots</td>
+                                        <td>@sizeStats.OccupiedSpots</td>
+                                        <td>@sizeStats.AvailableSpots</td>
+                                        <td style="width: 25%;">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div class="progress flex-grow-1" style="height: 8px;">
+                                                    <div class="progress-bar @(occupancyRate > 80 ? "bg-danger" : occupancyRate > 50 ? "bg-warning" : "bg-success")"
+                                                         role="progressbar"
+                                                         style="width: @occupancyRate.ToString("F0")%">
+                                                    </div>
+                                                </div>
+                                                <span class="text-muted small">@occupancyRate.ToString("F0")%</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

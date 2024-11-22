@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Garage_3._0.Models
+namespace Garage_3._0.Models.ViewModels
 {
-    public class ParkedVehicle
+    public class ParkedVehicleCreateViewModel
     {
         public int Id { get; set; }
 
@@ -18,19 +18,12 @@ namespace Garage_3._0.Models
         [Required(ErrorMessage = "Color is required.")]
         public string Color { get; set; }
 
-        // Foreign Keys
         [Required(ErrorMessage = "Vehicle Type is required.")]
-        public int VehicleTypeId { get; set; } // Add foreign key for VehicleType
-        public VehicleType VehicleType { get; set; }
-
-        [Required(ErrorMessage = "User is required.")]
-        public string ApplicationUserId { get; set; } // Foreign key for ApplicationUser
-        public ApplicationUser ApplicationUser { get; set; }
+        public int VehicleTypeId { get; set; }
 
         [Required(ErrorMessage = "Parking Spot is required.")]
-        public int ParkingSpotId { get; set; } // Add foreign key for ParkingSpot
-        public ParkingSpot ParkingSpot { get; set; }
+        public int ParkingSpotId { get; set; }
 
+      
     }
-
 }
