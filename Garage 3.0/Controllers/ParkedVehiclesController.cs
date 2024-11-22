@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Garage_3._0.Controllers
 {
+    [Authorize]
     public class ParkedVehiclesController : Controller
     {
         private readonly ApplicationDbContext _context;
