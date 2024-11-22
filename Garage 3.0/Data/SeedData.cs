@@ -21,15 +21,17 @@ namespace Garage_3._0.Data
             var roleNames = new[] { "User", "Admin" };
             var adminEmail = "admin@admin.com";
             var userEmail = "user@user.com";
+            var minorUserEmail = "minoruser@user.com";
 
             await AddRolesAsync(roleNames);
 
-           
             var admin = await AddAccountAsync(adminEmail, "AdminName", "AdminLName", "Admin2024-", "19970103-7990");
             var user = await AddAccountAsync(userEmail, "UserName", "UserLName", "User2024-", "19950411-3240");
+            var minorUser = await AddAccountAsync(minorUserEmail, "MinorUserName", "MinorUserLName", "User2024-", "20100511-1234");
 
             await AddUserToRoleAsync(admin, "Admin");
             await AddUserToRoleAsync(user, "User");
+            await AddUserToRoleAsync(minorUser, "User");
         }
 
         private static async Task AddUserToRoleAsync(ApplicationUser user, string roleName)

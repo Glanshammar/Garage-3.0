@@ -9,6 +9,7 @@ using Garage_3._0.Data;
 using Garage_3._0.Models;
 using Garage_3._0.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace Garage_3._0.Controllers
 {
@@ -16,16 +17,38 @@ namespace Garage_3._0.Controllers
     public class ParkedVehiclesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ParkedVehiclesController(ApplicationDbContext context)
+        public ParkedVehiclesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: ParkedVehicles
         public async Task<IActionResult> Index()
         {
-            var viewModel = _context.ParkedVehicles.Select(p => new ParkedVehicleIndexViewModel
+            // Get the currently logged-in user's ID
+            var currentUserId = _userManager.GetUserId(User);
+
+            // Check if the currently logged-in user is an Admin
+            var isAdmin = User.IsInRole("Admin");
+
+            IQueryable<ParkedVehicle> parkedVehicles;
+
+            // If the user is an Admin, they should see all vehicles
+            if (isAdmin)
+            {
+                parkedVehicles = _context.ParkedVehicles;
+            }
+            else
+            {
+                // Otherwise, only show vehicles belonging to the logged-in user
+                parkedVehicles = _context.ParkedVehicles.Where(p => p.ApplicationUserId == currentUserId);
+            }
+
+            // Create the view model
+            var viewModel = parkedVehicles.Select(p => new ParkedVehicleIndexViewModel
             {
                 Id = p.Id,
                 RegistrationNumber = p.RegistrationNumber,
@@ -36,6 +59,7 @@ namespace Garage_3._0.Controllers
 
             return View(await viewModel.ToListAsync());
         }
+
 
 
         // GET: ParkedVehicles/Details/5
