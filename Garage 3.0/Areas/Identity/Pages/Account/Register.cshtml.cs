@@ -64,8 +64,8 @@ namespace Garage_3._0.Areas.Identity.Pages.Account
             public string LastName { get; set; }
 
             [Required]
-            [Display(Name = "Personal Number")]
-            [StringLength(12, MinimumLength = 10, ErrorMessage = "The Personal Number must be between 10 and 12 characters.")]
+            [StringLength(12, ErrorMessage = "The Personal Number must be exactly 12 characters long.")]
+            [RegularExpression(@"^\d{12}$", ErrorMessage = "The Personal Number must be exactly 12 digits.")]
             public string PersonalNumber { get; set; }
 
             [Required]
@@ -112,7 +112,10 @@ namespace Garage_3._0.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
+                   
                     _logger.LogInformation("User created a new account with password.");
+                    // Add user to "User" role
+                    await _userManager.AddToRoleAsync(user, "User");
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

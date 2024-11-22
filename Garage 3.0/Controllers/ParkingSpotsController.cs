@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Garage_3._0.Controllers
 {
+    [Authorize(Roles = "Admin")]
+
     public class ParkingSpotsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -74,24 +76,25 @@ namespace Garage_3._0.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ParkingSpotViewModel model)
+        public async Task<IActionResult> Create(ParkingSpotViewModel viewmodel)
         {
             if (ModelState.IsValid)
             {
                 var parkingSpot = new ParkingSpot
                 {
-                    SpotNumber = model.SpotNumber,
-                    Size = model.Size,
-                    Location = model.Location,
-                    IsOccupied = model.IsOccupied
+                    SpotNumber = viewmodel.SpotNumber,
+                    Size = viewmodel.Size,
+                    Location = viewmodel.Location,
+                    IsOccupied = viewmodel.IsOccupied
                 };
 
                 _context.ParkingSpots.Add(parkingSpot);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(model);
+            return View(viewmodel);
         }
+   
 
         [HttpPost]
         public async Task<IActionResult> ToggleStatus(int id)

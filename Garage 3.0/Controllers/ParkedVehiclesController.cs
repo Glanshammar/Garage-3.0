@@ -9,22 +9,46 @@ using Garage_3._0.Data;
 using Garage_3._0.Models;
 using Garage_3._0.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace Garage_3._0.Controllers
 {
+    [Authorize]
     public class ParkedVehiclesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ParkedVehiclesController(ApplicationDbContext context)
+        public ParkedVehiclesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: ParkedVehicles
         public async Task<IActionResult> Index()
         {
-            var viewModel = _context.ParkedVehicles.Select(p => new ParkedVehicleIndexViewModel
+            // Get the currently logged-in user's ID
+            var currentUserId = _userManager.GetUserId(User);
+
+            // Check if the currently logged-in user is an Admin
+            var isAdmin = User.IsInRole("Admin");
+
+            IQueryable<ParkedVehicle> parkedVehicles;
+
+            // If the user is an Admin, they should see all vehicles
+            if (isAdmin)
+            {
+                parkedVehicles = _context.ParkedVehicles;
+            }
+            else
+            {
+                // Otherwise, only show vehicles belonging to the logged-in user
+                parkedVehicles = _context.ParkedVehicles.Where(p => p.ApplicationUserId == currentUserId);
+            }
+
+            // Create the view model
+            var viewModel = parkedVehicles.Select(p => new ParkedVehicleIndexViewModel
             {
                 Id = p.Id,
                 RegistrationNumber = p.RegistrationNumber,
@@ -35,6 +59,7 @@ namespace Garage_3._0.Controllers
 
             return View(await viewModel.ToListAsync());
         }
+
 
 
         // GET: ParkedVehicles/Details/5
@@ -75,9 +100,6 @@ namespace Garage_3._0.Controllers
         [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> Create(ParkedVehicleCreateViewModel vehicleViewModel)
         {
-         
-
-
             // Check if the model state is valid
             if (ModelState.IsValid)
             {
@@ -97,7 +119,22 @@ namespace Garage_3._0.Controllers
                         return View(vehicleViewModel);
                     }
 
-                    // Retrieve vehicle type and parking spot information by ID
+                    // Retrieve the logged-in user's information
+                    var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
+
+                    // Check if the user is over 18 years old
+                    if (user.Age < 18)
+                    {
+                        // Add model error if the user is not allowed to park a vehicle
+                        ModelState.AddModelError("", "Only users over 18 years old can park vehicles.");
+
+                        // Re-populate dropdown lists in case of validation failure
+                        ViewBag.ParkingSpots = new SelectList(_context.ParkingSpots.Where(s => !s.IsOccupied), "Id", "SpotNumber");
+                        ViewBag.VehicleTypes = new SelectList(_context.VehicleTypes, "Id", "Name");
+                        return View(vehicleViewModel);
+                    }
+
+                    // Retrieve vehicle type and parking spot based on the provided ID
                     var vehicleType = await _context.VehicleTypes.FirstOrDefaultAsync(v => v.Id == vehicleViewModel.VehicleTypeId);
                     var parkingSpot = await _context.ParkingSpots.FirstOrDefaultAsync(p => p.Id == vehicleViewModel.ParkingSpotId);
 
@@ -113,7 +150,7 @@ namespace Garage_3._0.Controllers
                         return View(vehicleViewModel);
                     }
 
-                    // Create and save the parked vehicle
+                    // Create a new ParkedVehicle instance and set its properties
                     var parkedVehicle = new ParkedVehicle
                     {
                         RegistrationNumber = vehicleViewModel.RegistrationNumber,
@@ -122,20 +159,22 @@ namespace Garage_3._0.Controllers
                         Color = vehicleViewModel.Color,
                         VehicleType = vehicleType,
                         ParkingSpot = parkingSpot,
-                        ApplicationUser = await _context.Users.FirstOrDefaultAsync(u => u.UserName == User.Identity.Name)
+                        ApplicationUser = user // Set the owner of the parked vehicle
                     };
 
+                    // Add the parked vehicle to the database context
                     _context.Add(parkedVehicle);
 
-                    // Update the parking spot status to occupied
+                    // Update the parking spot status to indicate that it is now occupied
                     parkingSpot.IsOccupied = true;
                     _context.Update(parkingSpot);
 
                     Console.WriteLine("Before SaveChangesAsync");
-                    await _context.SaveChangesAsync(); // Save changes to the database
+                    // Save changes to the database
+                    await _context.SaveChangesAsync();
                     Console.WriteLine("After SaveChangesAsync");
 
-                    // Redirect to the index view after successful creation
+                    // Redirect to the Index view after successful creation
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
@@ -162,8 +201,7 @@ namespace Garage_3._0.Controllers
 
 
 
-
-
+        [Authorize(Roles = "Admin")]
         // GET: ParkedVehicles/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -215,6 +253,7 @@ namespace Garage_3._0.Controllers
             return View(parkedVehicle);
         }
 
+        [Authorize(Roles = "Admin")]
         // GET: ParkedVehicles/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -233,6 +272,7 @@ namespace Garage_3._0.Controllers
             return View(parkedVehicle);
         }
 
+        [Authorize(Roles = "Admin")]
         // POST: ParkedVehicles/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -257,6 +297,7 @@ namespace Garage_3._0.Controllers
 
 
         // GET: Members/Overview
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Overview()
         {
             // Hämta alla medlemmar och deras fordon
@@ -284,6 +325,7 @@ namespace Garage_3._0.Controllers
         }
 
         // GET: Members/Details/{id}
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
