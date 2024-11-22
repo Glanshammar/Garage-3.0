@@ -11,9 +11,6 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.MemberId)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.FullName)
             </th>
             <th>
@@ -26,22 +23,25 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.MemberId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FullName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NumberOfRegisteredVehicles)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalParkingCost)
-            </td>
-           
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NumberOfRegisteredVehicles)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalParkingCost)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.MemberId">View Details</a>
+                </td>
+              
+            </tr>
+        }
     </tbody>
 </table>
+
+

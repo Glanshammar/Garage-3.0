@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace Garage_3._0.Models
 {
@@ -6,33 +7,35 @@ namespace Garage_3._0.Models
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
+
+        [Required]
+        [StringLength(12, ErrorMessage = "The Personal Number must be exactly 12 characters long.")]
+        [RegularExpression(@"^\d{12}$", ErrorMessage = "The Personal Number must be exactly 12 digits.")]
         public string PersonalNumber { get; set; }
 
         public ICollection<ParkedVehicle> ParkedVehicles { get; set; }
-        public (int Years, int Days) Age
+
+        // Update Age calculation
+        public int Age
         {
             get
             {
-                if (!string.IsNullOrEmpty(PersonalNumber) && PersonalNumber.Length >= 8)
+                if (!string.IsNullOrEmpty(PersonalNumber) && PersonalNumber.Length == 12)
                 {
                     if (DateTime.TryParseExact(PersonalNumber.Substring(0, 8), "yyyyMMdd", null, System.Globalization.DateTimeStyles.None, out var birthDate))
                     {
                         var today = DateTime.Today;
                         var age = today.Year - birthDate.Year;
-                        var lastBirthday = birthDate.AddYears(age);
 
-                        if (lastBirthday > today)
-                        {
-                            age--;
-                            lastBirthday = lastBirthday.AddYears(-1);
-                        }
+                        // Check if the birthday has occurred this year
+                        if (birthDate.Date > today.AddYears(-age)) age--;
 
-                        var days = (today - lastBirthday).Days;
-                        return (age, days);
+                        return age;
                     }
                 }
-                return (0, 0);
+                return 0;
             }
         }
     }
+
 }

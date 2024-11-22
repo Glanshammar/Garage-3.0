@@ -25,9 +25,9 @@ namespace Garage_3._0.Data
 
             await AddRolesAsync(roleNames);
 
-            var admin = await AddAccountAsync(adminEmail, "AdminName", "AdminLName", "Admin2024-", "19970103-7990");
-            var user = await AddAccountAsync(userEmail, "UserName", "UserLName", "User2024-", "19950411-3240");
-            var minorUser = await AddAccountAsync(minorUserEmail, "MinorUserName", "MinorUserLName", "User2024-", "20100511-1234");
+            var admin = await AddAccountAsync(adminEmail, "AdminName", "AdminLName", "Admin2024-", "199701037990");
+            var user = await AddAccountAsync(userEmail, "UserName", "UserLName", "User2024-", "199504113240");
+            var minorUser = await AddAccountAsync(minorUserEmail, "MinorUserName", "MinorUserLName", "User2024-", "201005111234");
 
             await AddUserToRoleAsync(admin, "Admin");
             await AddUserToRoleAsync(user, "User");

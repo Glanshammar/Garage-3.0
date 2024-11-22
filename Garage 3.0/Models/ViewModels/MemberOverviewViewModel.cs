@@ -8,5 +8,9 @@
         public int NumberOfRegisteredVehicles { get; set; }
         public decimal TotalParkingCost { get; set; }
         public ICollection<VehicleDetailsViewModel> RegisteredVehicles { get; set; }
+        public MemberOverviewViewModel()
+        {
+            RegisteredVehicles = new List<VehicleDetailsViewModel>();
+        }
     }
 }

@@ -61,7 +61,7 @@ namespace Garage_3._0.Controllers
         }
 
 
-
+    /*
         // GET: ParkedVehicles/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -79,6 +79,7 @@ namespace Garage_3._0.Controllers
 
             return View(parkedVehicle);
         }
+    */
        
 
         // GET: ParkedVehicles/Create
@@ -100,7 +101,6 @@ namespace Garage_3._0.Controllers
         [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> Create(ParkedVehicleCreateViewModel vehicleViewModel)
         {
-            // Check if the model state is valid
             if (ModelState.IsValid)
             {
                 try
@@ -110,10 +110,7 @@ namespace Garage_3._0.Controllers
                         .FirstOrDefaultAsync(v => v.RegistrationNumber == vehicleViewModel.RegistrationNumber);
                     if (existingVehicle != null)
                     {
-                        // Add model error if the vehicle is already parked
                         ModelState.AddModelError("", "A vehicle with this registration number is already parked.");
-
-                        // Re-populate dropdown lists in case of validation failure
                         ViewBag.ParkingSpots = new SelectList(_context.ParkingSpots.Where(s => !s.IsOccupied), "Id", "SpotNumber");
                         ViewBag.VehicleTypes = new SelectList(_context.VehicleTypes, "Id", "Name");
                         return View(vehicleViewModel);
@@ -123,17 +120,9 @@ namespace Garage_3._0.Controllers
                     var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
 
                     // Check if the user is over 18 years old
-                    if (user.Age.Years < 18)
+                    if (user.Age < 18)
                     {
-                        // Add model error if the user is not allowed to park a vehicle
                         ModelState.AddModelError("", "Only users over 18 years old can park vehicles.");
-                        return View(vehicleViewModel);
-                    }
-                    {
-                        // Add model error if the user is not allowed to park a vehicle
-                        ModelState.AddModelError("", "Only users over 18 years old can park vehicles.");
-
-                        // Re-populate dropdown lists in case of validation failure
                         ViewBag.ParkingSpots = new SelectList(_context.ParkingSpots.Where(s => !s.IsOccupied), "Id", "SpotNumber");
                         ViewBag.VehicleTypes = new SelectList(_context.VehicleTypes, "Id", "Name");
                         return View(vehicleViewModel);
@@ -146,10 +135,7 @@ namespace Garage_3._0.Controllers
                     // Validate the selected vehicle type and parking spot
                     if (parkingSpot == null || vehicleType == null)
                     {
-                        // Add model error if either parking spot or vehicle type is invalid
                         ModelState.AddModelError("", "Invalid parking spot or vehicle type selected.");
-
-                        // Re-populate dropdown lists in case of validation failure
                         ViewBag.ParkingSpots = new SelectList(_context.ParkingSpots.Where(s => !s.IsOccupied), "Id", "SpotNumber");
                         ViewBag.VehicleTypes = new SelectList(_context.VehicleTypes, "Id", "Name");
                         return View(vehicleViewModel);
@@ -164,10 +150,10 @@ namespace Garage_3._0.Controllers
                         Color = vehicleViewModel.Color,
                         VehicleType = vehicleType,
                         ParkingSpot = parkingSpot,
-                        ApplicationUser = user // Set the owner of the parked vehicle
+                        ArrivalTime = DateTime.Now,
+                        ApplicationUser = user
                     };
 
-                    // Add the parked vehicle to the database context
                     _context.Add(parkedVehicle);
 
                     // Update the parking spot status to indicate that it is now occupied
@@ -175,8 +161,7 @@ namespace Garage_3._0.Controllers
                     _context.Update(parkingSpot);
 
                     Console.WriteLine("Before SaveChangesAsync");
-                    // Save changes to the database
-                    await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync(); // Save changes to the database
                     Console.WriteLine("After SaveChangesAsync");
 
                     // Redirect to the Index view after successful creation
@@ -184,26 +169,19 @@ namespace Garage_3._0.Controllers
                 }
                 catch (Exception ex)
                 {
-                    // Log the exception and add a general error message to ModelState
                     Console.WriteLine($"Exception occurred: {ex.Message}");
                     ModelState.AddModelError("", "An unexpected error occurred while trying to park the vehicle.");
                 }
             }
             else
             {
-                // Add a general error message if ModelState is not valid
                 ModelState.AddModelError("", "There are some errors in the form. Please correct them and try again.");
             }
 
-            // If something goes wrong, re-populate dropdown lists and return the view with the model
             ViewBag.ParkingSpots = new SelectList(_context.ParkingSpots.Where(s => !s.IsOccupied), "Id", "SpotNumber");
             ViewBag.VehicleTypes = new SelectList(_context.VehicleTypes, "Id", "Name");
             return View(vehicleViewModel);
         }
-
-
-
-
 
 
         [Authorize(Roles = "Admin")]
@@ -299,35 +277,41 @@ namespace Garage_3._0.Controllers
         }
 
 
-
-
         // GET: Members/Overview
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Overview()
         {
-            // Hämta alla medlemmar och deras fordon
-            var members = await _context.Users
+            // Load all members and their parked vehicles
+            var membersData = await _context.Users
                 .Include(u => u.ParkedVehicles)
                 .ThenInclude(v => v.VehicleType)
-                .Select(u => new MemberOverviewViewModel
+                .Include(u => u.ParkedVehicles)
+                .ThenInclude(v => v.ParkingSpot) // Include ParkingSpot
+                .ToListAsync();
+
+            // Calculate member data in-memory
+            var members = membersData.Select(u => new MemberOverviewViewModel
+            {
+                MemberId = u.Id,
+                FullName = $"{u.FirstName} {u.LastName}",
+                NumberOfRegisteredVehicles = u.ParkedVehicles.Count,
+                TotalParkingCost = u.ParkedVehicles.Sum(v => (decimal)Math.Ceiling((DateTime.Now - v.ArrivalTime).TotalHours) * 20), 
+                RegisteredVehicles = u.ParkedVehicles.Select(v => new VehicleDetailsViewModel
                 {
-                    MemberId = u.Id,
-                    FullName = $"{u.FirstName} {u.LastName}",
-                    NumberOfRegisteredVehicles = u.ParkedVehicles.Count,
-                    TotalParkingCost = u.ParkedVehicles.Sum(v => v.ParkingSpot != null ? v.ParkingSpot.ParkingCost : 0),
-                    RegisteredVehicles = u.ParkedVehicles.Select(v => new VehicleDetailsViewModel
-                    {
-                        RegistrationNumber = v.RegistrationNumber,
-                        Model = v.Model,
-                        Brand = v.Brand,
-                        Color = v.Color,
-                        VehicleType = v.VehicleType.Name,
-                        CurrentParkingCost = v.ParkingSpot != null ? v.ParkingSpot.ParkingCost : 0
-                    }).ToList()
-                }).ToListAsync();
+                    RegistrationNumber = v.RegistrationNumber,
+                    Model = v.Model,
+                    Brand = v.Brand,
+                    Color = v.Color,
+                    VehicleType = v.VehicleType.Name,
+                    ParkingSpotNumber = v.ParkingSpot != null ? v.ParkingSpot.SpotNumber : "N/A",
+                    CurrentParkingCost = (decimal)Math.Ceiling((DateTime.Now - v.ArrivalTime).TotalHours) * 20
+                }).ToList()
+            }).ToList();
 
             return View(members);
         }
+
+
 
         // GET: Members/Details/{id}
         [Authorize(Roles = "Admin")]
@@ -338,35 +322,41 @@ namespace Garage_3._0.Controllers
                 return NotFound();
             }
 
-            var member = await _context.Users
+            // Load the user and related data
+            var user = await _context.Users
                 .Include(u => u.ParkedVehicles)
                 .ThenInclude(v => v.VehicleType)
-                .Select(u => new MemberOverviewViewModel
-                {
-                    MemberId = u.Id,
-                    FullName = $"{u.FirstName} {u.LastName}",
-                    NumberOfRegisteredVehicles = u.ParkedVehicles.Count,
-                    TotalParkingCost = u.ParkedVehicles.Sum(v => v.ParkingSpot != null ? v.ParkingSpot.ParkingCost : 0),
-                    RegisteredVehicles = u.ParkedVehicles.Select(v => new VehicleDetailsViewModel
-                    {
-                        RegistrationNumber = v.RegistrationNumber,
-                        Model = v.Model,
-                        Brand = v.Brand,
-                        Color = v.Color,
-                        VehicleType = v.VehicleType.Name,
-                        CurrentParkingCost = v.ParkingSpot != null ? v.ParkingSpot.ParkingCost : 0
-                    }).ToList()
-                })
-                .FirstOrDefaultAsync(m => m.MemberId == id);
+                .Include(u => u.ParkedVehicles)
+                .ThenInclude(v => v.ParkingSpot) 
+                .FirstOrDefaultAsync(u => u.Id == id);
 
-            if (member == null)
+            if (user == null)
             {
                 return NotFound();
             }
 
+            // Calculate the total parking cost and other properties in-memory
+            var member = new MemberOverviewViewModel
+            {
+                MemberId = user.Id,
+                FullName = $"{user.FirstName} {user.LastName}",
+                NumberOfRegisteredVehicles = user.ParkedVehicles.Count,
+                TotalParkingCost = user.ParkedVehicles.Sum(v => (decimal)Math.Ceiling((DateTime.Now - v.ArrivalTime).TotalHours) * 20),
+                RegisteredVehicles = user.ParkedVehicles.Select(v => new VehicleDetailsViewModel
+                {
+                    RegistrationNumber = v.RegistrationNumber,
+                    Model = v.Model,
+                    Brand = v.Brand,
+                    Color = v.Color,
+                    VehicleType = v.VehicleType.Name,
+                    ArrivalTime = v.ArrivalTime,
+                    ParkingSpotNumber = v.ParkingSpot != null ? v.ParkingSpot.SpotNumber : "N/A", 
+                    CurrentParkingCost = (decimal)Math.Ceiling((DateTime.Now - v.ArrivalTime).TotalHours) * 20
+                }).ToList()
+            };
+
             return View(member);
         }
-
 
 
     }

@@ -9,5 +9,9 @@
         public string Color { get; set; }
         public string VehicleType { get; set; }
         public decimal CurrentParkingCost { get; set; }
+        public DateTime ArrivalTime { get; set; }
+        public string ParkingSpotNumber { get; set; }  // Assigned parking spot number
+        public TimeSpan ParkingDuration { get; set; }  // Duration the vehicle has been parked
+        public decimal TotalParkingCost { get; set; }
     }
 }

@@ -30,6 +30,28 @@ namespace Garage_3._0.Models
         [Required(ErrorMessage = "Parking Spot is required.")]
         public int ParkingSpotId { get; set; } // Add foreign key for ParkingSpot
 
+
+        [Required(ErrorMessage = "Arrival time is required.")]
+        [Display(Name = "Arrival Time")]
+        [DataType(DataType.DateTime)]
+        public DateTime ArrivalTime { get; set; }
         public ParkingSpot ParkingSpot { get; set; }
+        [Display(Name = "Parking Cost")]
+        public decimal ParkingCost
+        {
+            get
+            {
+                // Here we assume that the parking cost is 20 SEK per hour
+                var hoursParked = (DateTime.Now - ArrivalTime).TotalHours;
+                return (decimal)(Math.Ceiling(hoursParked) * 20); 
+            }
+        }
+        
+
+
+        public ParkedVehicle()
+        {
+            ArrivalTime = DateTime.Now;
+        }
     }
 }

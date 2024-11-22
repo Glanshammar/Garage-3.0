@@ -64,8 +64,6 @@ namespace Garage_3._0.Areas.Identity.Pages.Account
             public string LastName { get; set; }
 
             [Required]
-            [StringLength(12, ErrorMessage = "The Personal Number must be exactly 12 characters long.")]
-            [RegularExpression(@"^\d{12}$", ErrorMessage = "The Personal Number must be exactly 12 digits.")]
             public string PersonalNumber { get; set; }
 
             [Required]
