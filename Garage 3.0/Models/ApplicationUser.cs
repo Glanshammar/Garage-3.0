@@ -9,7 +9,7 @@ namespace Garage_3._0.Models
         public string PersonalNumber { get; set; }
 
         public ICollection<ParkedVehicle> ParkedVehicles { get; set; }
-        public int Age
+        public (int Years, int Days) Age
         {
             get
             {
@@ -19,13 +19,20 @@ namespace Garage_3._0.Models
                     {
                         var today = DateTime.Today;
                         var age = today.Year - birthDate.Year;
-                        if (birthDate.Date > today.AddYears(-age)) age--;
-                        return age;
+                        var lastBirthday = birthDate.AddYears(age);
+
+                        if (lastBirthday > today)
+                        {
+                            age--;
+                            lastBirthday = lastBirthday.AddYears(-1);
+                        }
+
+                        var days = (today - lastBirthday).Days;
+                        return (age, days);
                     }
                 }
-                return 0; 
+                return (0, 0);
             }
         }
     }
-
 }

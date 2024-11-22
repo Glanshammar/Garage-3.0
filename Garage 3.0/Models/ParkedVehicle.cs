@@ -29,8 +29,7 @@ namespace Garage_3._0.Models
 
         [Required(ErrorMessage = "Parking Spot is required.")]
         public int ParkingSpotId { get; set; } // Add foreign key for ParkingSpot
+
         public ParkingSpot ParkingSpot { get; set; }
-
     }
-
 }
