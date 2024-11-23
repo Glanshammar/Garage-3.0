@@ -1,42 +1,63 @@
-﻿@model Garage_3._0.Models.ParkedVehicle
+﻿@model Garage_3._0.Models.ViewModels.MemberOverviewViewModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Member Details";
 }
 
-<h1>Details</h1>
+<h1>Member Details</h1>
 
 <div>
-    <h4>ParkedVehicle</h4>
+    <h4>Member Information</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.RegistrationNumber)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.RegistrationNumber)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Model)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Model)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Brand)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Brand)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Color)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Color)
-        </dd>
+        <dt class="col-sm-2">Member ID</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.MemberId)</dd>
+
+        <dt class="col-sm-2">Full Name</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.FullName)</dd>
+
+        <dt class="col-sm-2">Number of Registered Vehicles</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.NumberOfRegisteredVehicles)</dd>
+
+        <dt class="col-sm-2">Total Parking Cost</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.TotalParkingCost)</dd>
     </dl>
 </div>
+
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <h4>Registered Vehicles</h4>
+    <hr />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Registration Number</th>
+                <th>Model</th>
+                <th>Brand</th>
+                <th>Color</th>
+                <th>Vehicle Type</th>
+                <th>Arrival Time</th>
+                <th>Parking Spot Number</th>
+                <th>Current Parking Cost</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var vehicle in Model.RegisteredVehicles)
+            {
+                <tr>
+                    <td>@vehicle.RegistrationNumber</td>
+                    <td>@vehicle.Model</td>
+                    <td>@vehicle.Brand</td>
+                    <td>@vehicle.Color</td>
+                    <td>@vehicle.VehicleType</td>
+                    <td>@vehicle.ArrivalTime.ToString("g")</td>
+                    <td>@vehicle.ParkingSpotNumber</td>
+                    <td>@vehicle.CurrentParkingCost</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <a asp-action="Overview">Back to Overview</a>
 </div>

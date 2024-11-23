@@ -5,10 +5,8 @@
         public int Id { get; set; }
         public string RegistrationNumber { get; set; }
 
-        //Foreign Keys
-        public VehicleType VehicleType { get; set; }
-        public ApplicationUser ApplicationUser { get; set; }
-
-        public ParkingSpot ParkingSpot { get; set; }
+        public string VehicleTypeName { get; set; }
+        public string OwnerName { get; set; }
+        public string ParkingSpotNumber { get; set; }
     }
 }

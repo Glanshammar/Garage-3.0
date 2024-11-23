@@ -1,0 +1,106 @@
+﻿@model IEnumerable<Garage_3._0.Models.ViewModels.ParkingSpotViewModel>
+
+@{
+    ViewData["Title"] = "Parking Spots";
+}
+
+<h1>Parking Spots</h1>
+
+<div>
+    <a asp-action="Create" class="btn btn-success">Create New Parking Spot</a>
+</div>
+
+<table class="table mt-4">
+    <thead>
+        <tr>
+            <th>Spot Number</th>
+            <th>Size</th>
+            <th>Location</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var spot in Model)
+        {
+            <tr>
+                <td>@spot.SpotNumber</td>
+                <td>@spot.Size</td>
+                <td>@spot.Location</td>
+                <td>
+                    @if (spot.IsOccupied)
+                    {
+                        <span class="text-danger">Occupied</span>
+                    }
+                    else
+                    {
+                        <span class="text-success">Available</span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@spot.Id" class="btn btn-info btn-sm">Details</a>
+                    <a asp-action="Edit" asp-route-id="@spot.Id" class="btn btn-primary btn-sm">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@spot.Id" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="grid mt-4">
+    @foreach (var spot in Model)
+    {
+        <div class="spot @(spot.IsOccupied ? "occupied" : "available")"
+             onclick="toggleSpotStatus(@spot.Id)">
+            @spot.SpotNumber
+        </div>
+    }
+</div>
+
+<style>
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr); /* 5 columns */
+        gap: 10px;
+    }
+
+    .spot {
+        width: 100px;
+        height: 100px;
+        text-align: center;
+        line-height: 100px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .occupied {
+        background-color: red;
+        color: white;
+    }
+
+    .available {
+        background-color: green;
+        color: white;
+    }
+</style>
+
+<script>
+    function toggleSpotStatus(spotId) {
+        fetch(`/ParkingSpot/ToggleStatus/${spotId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    location.reload(); // Reload the page to reflect the updated status
+                } else {
+                    alert("Could not update the parking spot status.");
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+</script>
