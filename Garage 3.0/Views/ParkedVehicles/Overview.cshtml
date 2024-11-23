@@ -1,13 +1,31 @@
 ﻿@model IEnumerable<Garage_3._0.Models.ViewModels.MemberOverviewViewModel>
-
 @{
-    ViewData["Title"] = "Overview";
+    ViewData["Title"] = "Member Overview";
 }
 
-<h1>Overview</h1>
+<h1>Members Overview</h1>
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <div class="input-group">
+            <span class="input-group-text">
+                <i class="fas fa-search"></i>
+            </span>
+            <input type="text" id="memberSearch" class="form-control" placeholder="Search by name...">
+        </div>
+    </div>
+    <div class="col-md-4">
+        <select id="vehicleFilter" class="form-select">
+            <option value="">All Vehicle Counts</option>
+            <option value="0">No Vehicles</option>
+            <option value="1-2">1-2 Vehicles</option>
+            <option value="3+">3 or More Vehicles</option>
+        </select>
+    </div>
+</div>
 
 
-<table class="table">
+<table class="table" id="membersTable">
     <thead>
         <tr>
             <th>
@@ -19,7 +37,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.TotalParkingCost)
             </th>
-            <th></th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -33,15 +51,18 @@
                     @Html.DisplayFor(modelItem => item.NumberOfRegisteredVehicles)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.TotalParkingCost)
+                    @Html.DisplayFor(modelItem => item.TotalParkingCost) kr
                 </td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.MemberId">View Details</a>
+                    <a asp-action="Details" asp-route-id="@item.MemberId" class="btn btn-info btn-sm">View Details</a>
                 </td>
-              
             </tr>
         }
     </tbody>
 </table>
+@section Scripts {
+
+    <script src="~/js/memberSearch.js"></script>
+}
 
 
