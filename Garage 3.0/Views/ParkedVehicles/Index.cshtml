@@ -1,52 +1,63 @@
 ﻿@model IEnumerable<Garage_3._0.Models.ViewModels.ParkedVehicleIndexViewModel>
-
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Parking Dashboard";
 }
 
-<h1> Parking Dashboard </h1>
+<div class="container-fluid py-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Parking Dashboard</h1>
+        <a asp-action="Create" class="btn btn-primary">Park a Vehicle</a>
+    </div>
 
-<p>
-    <a asp-action="Create">Add a Vehicle</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.RegistrationNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.VehicleTypeName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.OwnerName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ParkingSpotNumber)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.RegistrationNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.VehicleTypeName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.OwnerName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ParkingSpotNumber)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.RegistrationNumber)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.VehicleTypeName)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.OwnerName)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ParkingSpotNumber)
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.RegistrationNumber)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.VehicleTypeName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.OwnerName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ParkingSpotNumber)
+                                </td>
+                                <td class="text-end">
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
+                                    }
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-success btn-sm">Check Out</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
