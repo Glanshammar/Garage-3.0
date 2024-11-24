@@ -1,0 +1,61 @@
+﻿@model Garage_3._0.Models.ViewModels.ParkingSpotViewModel
+
+@{
+    ViewData["Title"] = "Edit Parking Spot";
+}
+
+<h1>Edit Parking Spot</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+
+            <!-- Spot Number -->
+            <div class="form-group">
+                <label asp-for="SpotNumber" class="control-label"></label>
+                <input asp-for="SpotNumber" class="form-control" />
+                <span asp-validation-for="SpotNumber" class="text-danger"></span>
+            </div>
+
+            <!-- Size -->
+            <div class="form-group">
+                <label asp-for="Size" class="control-label"></label>
+                <input asp-for="Size" class="form-control" />
+                <span asp-validation-for="Size" class="text-danger"></span>
+            </div>
+
+            <!-- Location -->
+            <div class="form-group">
+                <label asp-for="Location" class="control-label"></label>
+                <input asp-for="Location" class="form-control" />
+                <span asp-validation-for="Location" class="text-danger"></span>
+            </div>
+
+            <!-- Mark as Occupied -->
+            <div class="form-group form-check">
+                <input class="form-check-input" asp-for="IsOccupied" />
+                <label class="form-check-label" asp-for="IsOccupied">Mark as Occupied</label>
+                <span asp-validation-for="IsOccupied" class="text-danger"></span>
+            </div>
+
+            <!-- Save Button -->
+            <div class="form-group">
+                <input type="submit" value="Save Changes" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Back to List -->
+<div>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

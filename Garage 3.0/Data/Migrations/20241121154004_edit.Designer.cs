@@ -4,6 +4,7 @@ using Garage_3._0.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Garage_3._0.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241121154004_edit")]
+    partial class edit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -113,9 +116,6 @@ namespace Garage_3._0.Data.Migrations
                     b.Property<string>("ApplicationUserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("ArrivalTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Brand")
                         .IsRequired()
@@ -280,9 +280,6 @@ namespace Garage_3._0.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("ArrivalTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Brand")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -318,13 +315,12 @@ namespace Garage_3._0.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("OwnerName")
+                    b.Property<string>("ApplicationUserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ParkingSpotNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ParkingSpotId")
+                        .HasColumnType("int");
 
                     b.Property<string>("RegistrationNumber")
                         .IsRequired()
@@ -332,9 +328,15 @@ namespace Garage_3._0.Data.Migrations
 
                     b.Property<string>("VehicleTypeName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("ParkingSpotId");
+
+                    b.HasIndex("VehicleTypeName");
 
                     b.ToTable("ParkedVehicleIndexViewModel");
                 });
@@ -346,9 +348,6 @@ namespace Garage_3._0.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("ArrivalTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Brand")
                         .IsRequired()
@@ -368,19 +367,9 @@ namespace Garage_3._0.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<TimeSpan>("ParkingDuration")
-                        .HasColumnType("time");
-
-                    b.Property<string>("ParkingSpotNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("RegistrationNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("TotalParkingCost")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("VehicleType")
                         .IsRequired()
@@ -546,6 +535,33 @@ namespace Garage_3._0.Data.Migrations
 
                     b.HasOne("Garage_3._0.Models.VehicleType", "VehicleType")
                         .WithMany("Vehicles")
+                        .HasForeignKey("VehicleTypeName")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+
+                    b.Navigation("ParkingSpot");
+
+                    b.Navigation("VehicleType");
+                });
+
+            modelBuilder.Entity("Garage_3._0.Models.ViewModels.ParkedVehicleIndexViewModel", b =>
+                {
+                    b.HasOne("Garage_3._0.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Garage_3._0.Models.ParkingSpot", "ParkingSpot")
+                        .WithMany()
+                        .HasForeignKey("ParkingSpotId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Garage_3._0.Models.VehicleType", "VehicleType")
+                        .WithMany()
                         .HasForeignKey("VehicleTypeName")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
