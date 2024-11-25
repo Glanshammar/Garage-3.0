@@ -6,7 +6,6 @@
     <title>@ViewData["Title"] - Garage_3._0</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Garage_3._0.styles.css" asp-append-version="true" />
 </head>
 <body>
     <header>
@@ -19,15 +18,20 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="ParkedVehicles" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="ParkedVehicles" asp-action="Index">Parke a Vehicles</a>
-                        </li>
+                       
+                        
+                          @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="ParkedVehicles" asp-action="Index">Parking Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="ParkedVehicles" asp-action="Overview">Member Overview</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="ParkingSpots" asp-action="Index">Parking Spots</a>
+                            </li>
+                        }
 
                     </ul>
                     <partial name="_LoginPartial" />
@@ -43,7 +47,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2024 - Garage_3._0 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2024 - Garage 3.0 - Grupp 4
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

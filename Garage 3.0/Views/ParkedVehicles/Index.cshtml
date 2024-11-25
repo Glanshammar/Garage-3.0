@@ -4,10 +4,10 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1> Parking Dashboard </h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Add a Vehicle</a>
 </p>
 <table class="table">
     <thead>
@@ -16,15 +16,16 @@
                 @Html.DisplayNameFor(model => model.RegistrationNumber)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ParkingSpot)
+                @Html.DisplayNameFor(model => model.VehicleTypeName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.VehicleType)
+                @Html.DisplayNameFor(model => model.OwnerName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ApplicationUser)
+                @Html.DisplayNameFor(model => model.ParkingSpotNumber)
             </th>
-         
+            <th>@Html.DisplayNameFor(model => model.First().ArrivalTime)</th>
+
             <th></th>
         </tr>
     </thead>
@@ -35,18 +36,18 @@
                 @Html.DisplayFor(modelItem => item.RegistrationNumber)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ParkingSpot)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.VehicleType)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ApplicationUser)
-                </td>
-           
+                @Html.DisplayFor(modelItem => item.VehicleTypeName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OwnerName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ParkingSpotNumber)
+            </td>
+                <td>@Html.DisplayFor(modelItem => item.ArrivalTime)</td>
+
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
