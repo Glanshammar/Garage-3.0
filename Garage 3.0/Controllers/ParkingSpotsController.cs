@@ -36,8 +36,6 @@ namespace Garage_3._0.Controllers
                     Location = s.Location,
                     IsOccupied = s.IsOccupied
 
-                    // AssignedVehicleRegistration = s.IsOccupied ? s.ParkedVehicle.RegistrationNumber : null 
-
                 });
 
             return View(await viewModel.ToListAsync());

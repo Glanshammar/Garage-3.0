@@ -62,27 +62,6 @@ namespace Garage_3._0.Controllers
         }
 
 
-    /*
-        // GET: ParkedVehicles/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var parkedVehicle = await _context.ParkedVehicles
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (parkedVehicle == null)
-            {
-                return NotFound();
-            }
-
-            return View(parkedVehicle);
-        }
-    */
-       
-
         // GET: ParkedVehicles/Create
         [Authorize(Roles = "Admin,User")]
         public IActionResult Create()
@@ -287,7 +266,7 @@ namespace Garage_3._0.Controllers
                 .Include(u => u.ParkedVehicles)
                 .ThenInclude(v => v.VehicleType)
                 .Include(u => u.ParkedVehicles)
-                .ThenInclude(v => v.ParkingSpot) // Include ParkingSpot
+                .ThenInclude(v => v.ParkingSpot) 
                 .ToListAsync();
 
             // Calculate member data in-memory
