@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Garage_3._0.Data.Migrations
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
+namespace Garage_3._0.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -32,7 +34,7 @@ namespace Garage_3._0.Data.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PersonalNumber = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    PersonalNumber = table.Column<string>(type: "nvarchar(12)", maxLength: 12, nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -54,28 +56,84 @@ namespace Garage_3._0.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ParkingSpot",
+                name: "MemberOverviewViewModel",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    row = table.Column<int>(type: "int", nullable: false),
-                    column = table.Column<int>(type: "int", nullable: false)
+                    MemberId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NumberOfRegisteredVehicles = table.Column<int>(type: "int", nullable: false),
+                    TotalParkingCost = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ParkingSpot", x => x.Id);
+                    table.PrimaryKey("PK_MemberOverviewViewModel", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "VehicleType",
+                name: "ParkedVehicleCreateViewModel",
                 columns: table => new
                 {
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RegistrationNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Model = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Brand = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Color = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    VehicleTypeId = table.Column<int>(type: "int", nullable: false),
+                    ParkingSpotId = table.Column<int>(type: "int", nullable: false),
+                    ArrivalTime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_VehicleType", x => x.Name);
+                    table.PrimaryKey("PK_ParkedVehicleCreateViewModel", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ParkedVehicleIndexViewModel",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RegistrationNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    VehicleTypeName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OwnerName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ParkingSpotNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ArrivalTime = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ParkedVehicleIndexViewModel", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ParkingSpots",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SpotNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Size = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsOccupied = table.Column<bool>(type: "bit", nullable: false),
+                    ParkingCost = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ParkingSpots", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "VehicleTypes",
+                columns: table => new
+                {
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VehicleTypes", x => x.Name);
                 });
 
             migrationBuilder.CreateTable(
@@ -185,6 +243,34 @@ namespace Garage_3._0.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "VehicleDetailsViewModel",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RegistrationNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Model = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Brand = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Color = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    VehicleType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CurrentParkingCost = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ArrivalTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ParkingSpotNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ParkingDuration = table.Column<TimeSpan>(type: "time", nullable: false),
+                    TotalParkingCost = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    MemberOverviewViewModelId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VehicleDetailsViewModel", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_VehicleDetailsViewModel_MemberOverviewViewModel_MemberOverviewViewModelId",
+                        column: x => x.MemberOverviewViewModelId,
+                        principalTable: "MemberOverviewViewModel",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ParkedVehicles",
                 columns: table => new
                 {
@@ -194,9 +280,11 @@ namespace Garage_3._0.Data.Migrations
                     Model = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Brand = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Color = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    VehicleTypeId = table.Column<int>(type: "int", nullable: false),
                     VehicleTypeName = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ParkingSpotId = table.Column<int>(type: "int", nullable: false)
+                    ParkingSpotId = table.Column<int>(type: "int", nullable: false),
+                    ArrivalTime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -208,17 +296,37 @@ namespace Garage_3._0.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ParkedVehicles_ParkingSpot_ParkingSpotId",
+                        name: "FK_ParkedVehicles_ParkingSpots_ParkingSpotId",
                         column: x => x.ParkingSpotId,
-                        principalTable: "ParkingSpot",
+                        principalTable: "ParkingSpots",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ParkedVehicles_VehicleType_VehicleTypeName",
+                        name: "FK_ParkedVehicles_VehicleTypes_VehicleTypeName",
                         column: x => x.VehicleTypeName,
-                        principalTable: "VehicleType",
+                        principalTable: "VehicleTypes",
                         principalColumn: "Name",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "ParkingSpots",
+                columns: new[] { "Id", "IsOccupied", "Location", "ParkingCost", "Size", "SpotNumber" },
+                values: new object[,]
+                {
+                    { 1, false, "North", 0m, "Small", "A1" },
+                    { 2, true, "South", 0m, "Medium", "B2" },
+                    { 3, false, "East", 0m, "Large", "C3" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "VehicleTypes",
+                columns: new[] { "Name", "Id" },
+                values: new object[,]
+                {
+                    { "Bus", 0 },
+                    { "Car", 0 },
+                    { "Motorcycle", 0 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -274,12 +382,18 @@ namespace Garage_3._0.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_ParkedVehicles_ParkingSpotId",
                 table: "ParkedVehicles",
-                column: "ParkingSpotId");
+                column: "ParkingSpotId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_ParkedVehicles_VehicleTypeName",
                 table: "ParkedVehicles",
                 column: "VehicleTypeName");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VehicleDetailsViewModel_MemberOverviewViewModelId",
+                table: "VehicleDetailsViewModel",
+                column: "MemberOverviewViewModelId");
         }
 
         /// <inheritdoc />
@@ -301,7 +415,16 @@ namespace Garage_3._0.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "ParkedVehicleCreateViewModel");
+
+            migrationBuilder.DropTable(
+                name: "ParkedVehicleIndexViewModel");
+
+            migrationBuilder.DropTable(
                 name: "ParkedVehicles");
+
+            migrationBuilder.DropTable(
+                name: "VehicleDetailsViewModel");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -310,10 +433,13 @@ namespace Garage_3._0.Data.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "ParkingSpot");
+                name: "ParkingSpots");
 
             migrationBuilder.DropTable(
-                name: "VehicleType");
+                name: "VehicleTypes");
+
+            migrationBuilder.DropTable(
+                name: "MemberOverviewViewModel");
         }
     }
 }
