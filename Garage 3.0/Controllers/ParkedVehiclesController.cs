@@ -54,7 +54,8 @@ namespace Garage_3._0.Controllers
                 RegistrationNumber = p.RegistrationNumber,
                 VehicleTypeName = p.VehicleType.Name,
                 OwnerName = $"{p.ApplicationUser.FirstName} {p.ApplicationUser.LastName}",
-                ParkingSpotNumber = p.ParkingSpot.SpotNumber
+                ParkingSpotNumber = p.ParkingSpot.SpotNumber,
+                ArrivalTime = p.ArrivalTime
             });
 
             return View(await viewModel.ToListAsync());
