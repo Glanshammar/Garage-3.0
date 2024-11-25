@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
 namespace Garage_3._0.Areas.Identity.Pages.Account
 {
@@ -96,6 +97,14 @@ namespace Garage_3._0.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
+
+                var existingUser = await _userManager.Users
+                           .FirstOrDefaultAsync(u => u.PersonalNumber == Input.PersonalNumber);
+                if (existingUser != null)
+                {
+                    ModelState.AddModelError("Input.PersonalNumber", "This personal number is already in use.");
+                    return Page();
+                }
                 var user = CreateUser();
 
                 // Map additional fields

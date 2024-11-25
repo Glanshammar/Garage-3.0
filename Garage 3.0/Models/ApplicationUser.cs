@@ -15,7 +15,6 @@ namespace Garage_3._0.Models
 
         public ICollection<ParkedVehicle> ParkedVehicles { get; set; }
 
-        // Update Age calculation
         public int Age
         {
             get
