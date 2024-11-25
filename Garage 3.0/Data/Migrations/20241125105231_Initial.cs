@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Garage_3._0.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class AddArrivalTimeToParkedVehicle : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -48,10 +48,26 @@ namespace Garage_3._0.Data.Migrations
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "ArrivalTime",
+                table: "ParkedVehicleIndexViewModel",
+                type: "datetime2",
+                nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "ArrivalTime",
                 table: "ParkedVehicleCreateViewModel",
                 type: "datetime2",
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
+            migrationBuilder.AlterColumn<string>(
+                name: "PersonalNumber",
+                table: "AspNetUsers",
+                type: "nvarchar(12)",
+                maxLength: 12,
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(450)");
         }
 
         /// <inheritdoc />
@@ -79,7 +95,20 @@ namespace Garage_3._0.Data.Migrations
 
             migrationBuilder.DropColumn(
                 name: "ArrivalTime",
+                table: "ParkedVehicleIndexViewModel");
+
+            migrationBuilder.DropColumn(
+                name: "ArrivalTime",
                 table: "ParkedVehicleCreateViewModel");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "PersonalNumber",
+                table: "AspNetUsers",
+                type: "nvarchar(450)",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(12)",
+                oldMaxLength: 12);
         }
     }
 }

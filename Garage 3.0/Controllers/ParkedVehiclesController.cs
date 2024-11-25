@@ -129,8 +129,7 @@ namespace Garage_3._0.Controllers
                     if (existingVehicle != null)
                     {
                         ModelState.AddModelError("", "A vehicle with this registration number is already parked.");
-                        //ViewBag.ParkingSpots = new SelectList(_context.ParkingSpots.Where(s => !s.IsOccupied), "Id", "SpotNumber");
-                        //ViewBag.VehicleTypes = new SelectList(_context.VehicleTypes, "Id", "Name");
+                      
                         await PrepareViewBagForCreate();
                         return View(vehicleViewModel);
                     }
@@ -142,8 +141,8 @@ namespace Garage_3._0.Controllers
                     if (user.Age < 18)
                     {
                         ModelState.AddModelError("", "Only users over 18 years old can park vehicles.");
-                        //ViewBag.ParkingSpots = new SelectList(_context.ParkingSpots.Where(s => !s.IsOccupied), "Id", "SpotNumber");
-                        //ViewBag.VehicleTypes = new SelectList(_context.VehicleTypes, "Id", "Name");
+                        ViewBag.ParkingSpots = new SelectList(_context.ParkingSpots.Where(s => !s.IsOccupied), "Id", "SpotNumber");
+                        ViewBag.VehicleTypes = new SelectList(_context.VehicleTypes, "Id", "Name");
                         await PrepareViewBagForCreate();
                         return View(vehicleViewModel);
                     }
@@ -158,8 +157,8 @@ namespace Garage_3._0.Controllers
                     {
 
                         ModelState.AddModelError("", "Selected parking spot is no longer available.");
-                        //ViewBag.ParkingSpots = new SelectList(_context.ParkingSpots.Where(s => !s.IsOccupied), "Id", "SpotNumber");
-                        //ViewBag.VehicleTypes = new SelectList(_context.VehicleTypes, "Id", "Name");
+                        ViewBag.ParkingSpots = new SelectList(_context.ParkingSpots.Where(s => !s.IsOccupied), "Id", "SpotNumber");
+                        ViewBag.VehicleTypes = new SelectList(_context.VehicleTypes, "Id", "Name");
                         await PrepareViewBagForCreate();
                         return View(vehicleViewModel);
                     }
@@ -201,8 +200,8 @@ namespace Garage_3._0.Controllers
                 ModelState.AddModelError("", "There are some errors in the form. Please correct them and try again.");
             }
 
-            //ViewBag.ParkingSpots = new SelectList(_context.ParkingSpots.Where(s => !s.IsOccupied), "Id", "SpotNumber");
-            //ViewBag.VehicleTypes = new SelectList(_context.VehicleTypes, "Id", "Name");
+            ViewBag.ParkingSpots = new SelectList(_context.ParkingSpots.Where(s => !s.IsOccupied), "Id", "SpotNumber");
+            ViewBag.VehicleTypes = new SelectList(_context.VehicleTypes, "Id", "Name");
             await PrepareViewBagForCreate();
             return View(vehicleViewModel);
         }
@@ -223,7 +222,6 @@ namespace Garage_3._0.Controllers
         }
 
 
-        [Authorize(Roles = "Admin")]
         // GET: ParkedVehicles/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -275,7 +273,7 @@ namespace Garage_3._0.Controllers
             return View(parkedVehicle);
         }
 
-        [Authorize(Roles = "Admin")]
+
         // GET: ParkedVehicles/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -294,18 +292,30 @@ namespace Garage_3._0.Controllers
             return View(parkedVehicle);
         }
 
-        [Authorize(Roles = "Admin")]
         // POST: ParkedVehicles/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]      
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var parkedVehicle = await _context.ParkedVehicles.FindAsync(id);
+            var parkedVehicle = await _context.ParkedVehicles
+                .Include(p => p.ParkingSpot) // Include the ParkingSpot to modify its state
+                .FirstOrDefaultAsync(p => p.Id == id);
+
             if (parkedVehicle != null)
             {
+                // Set the ParkingSpot as unoccupied
+                if (parkedVehicle.ParkingSpot != null)
+                {
+                    parkedVehicle.ParkingSpot.IsOccupied = false;
+                    _context.Update(parkedVehicle.ParkingSpot);
+                }
+
+                // Remove the parked vehicle from the context
                 _context.ParkedVehicles.Remove(parkedVehicle);
             }
 
+            // Save changes to the database
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -314,6 +324,8 @@ namespace Garage_3._0.Controllers
         {
             return _context.ParkedVehicles.Any(e => e.Id == id);
         }
+
+
 
 
         // GET: Members/Overview
