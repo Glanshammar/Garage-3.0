@@ -4,60 +4,70 @@
     ViewData["Title"] = "Member Details";
 }
 
-<h1>Member Details</h1>
+<div class="container-fluid py-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Member Details</h1>
+    </div>
 
-<div>
-    <h4>Member Information</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">Member ID</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.MemberId)</dd>
+    <div class="card mb-4">
+        <div class="card-body">
+            <h4>Member Information</h4>
+            <hr />
+            <dl class="row">
+                <dt class="col-sm-3">Member ID</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.MemberId)</dd>
 
-        <dt class="col-sm-2">Full Name</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.FullName)</dd>
+                <dt class="col-sm-3">Full Name</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.FullName)</dd>
 
-        <dt class="col-sm-2">Number of Registered Vehicles</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.NumberOfRegisteredVehicles)</dd>
+                <dt class="col-sm-3">Number of Registered Vehicles</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.NumberOfRegisteredVehicles)</dd>
 
-        <dt class="col-sm-2">Total Parking Cost</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.TotalParkingCost)</dd>
-    </dl>
-</div>
+                <dt class="col-sm-3">Total Parking Cost</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.TotalParkingCost)</dd>
+            </dl>
+        </div>
+    </div>
 
-<div>
-    <h4>Registered Vehicles</h4>
-    <hr />
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Registration Number</th>
-                <th>Model</th>
-                <th>Brand</th>
-                <th>Color</th>
-                <th>Vehicle Type</th>
-                <th>Arrival Time</th>
-                <th>Parking Spot Number</th>
-                <th>Current Parking Cost</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var vehicle in Model.RegisteredVehicles)
-            {
-                <tr>
-                    <td>@vehicle.RegistrationNumber</td>
-                    <td>@vehicle.Model</td>
-                    <td>@vehicle.Brand</td>
-                    <td>@vehicle.Color</td>
-                    <td>@vehicle.VehicleType</td>
-                    <td>@vehicle.ArrivalTime.ToString("g")</td>
-                    <td>@vehicle.ParkingSpotNumber</td>
-                    <td>@vehicle.CurrentParkingCost</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+    <div class="card">
+        <div class="card-body">
+            <h4>Registered Vehicles</h4>
+            <hr />
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Registration Number</th>
+                            <th>Model</th>
+                            <th>Brand</th>
+                            <th>Color</th>
+                            <th>Vehicle Type</th>
+                            <th>Arrival Time</th>
+                            <th>Parking Spot Number</th>
+                            <th>Current Parking Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var vehicle in Model.RegisteredVehicles)
+                        {
+                            <tr>
+                                <td>@vehicle.RegistrationNumber</td>
+                                <td>@vehicle.Model</td>
+                                <td>@vehicle.Brand</td>
+                                <td>@vehicle.Color</td>
+                                <td>@vehicle.VehicleType</td>
+                                <td>@vehicle.ArrivalTime.ToString("g")</td>
+                                <td>@vehicle.ParkingSpotNumber</td>
+                                <td>@vehicle.CurrentParkingCost.ToString("C", new System.Globalization.CultureInfo("sv-SE"))</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
-<div>
-    <a asp-action="Overview">Back to Overview</a>
+    <div class="mt-3">
+        <a asp-action="Overview" class="btn btn-secondary">Back to Overview</a>
+    </div>
 </div>

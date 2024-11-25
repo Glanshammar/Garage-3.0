@@ -27,6 +27,8 @@
                             <th>
                                 @Html.DisplayNameFor(model => model.ParkingSpotNumber)
                             </th>
+                            <th>@Html.DisplayNameFor(model => model.First().ArrivalTime)</th>
+
                             <th></th>
                         </tr>
                     </thead>
@@ -46,12 +48,14 @@
                                 <td>
                                     @Html.DisplayFor(modelItem => item.ParkingSpotNumber)
                                 </td>
+                                <td>@Html.DisplayFor(modelItem => item.ArrivalTime)</td>
+
                                 <td class="text-end">
                                     @if (User.IsInRole("Admin"))
                                     {
                                         <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
                                     }
-                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-success btn-sm">Check Out</a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Check Out</a>
                                 </td>
                             </tr>
                         }

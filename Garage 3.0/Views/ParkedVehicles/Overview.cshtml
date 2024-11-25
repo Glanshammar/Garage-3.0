@@ -1,47 +1,54 @@
 ﻿@model IEnumerable<Garage_3._0.Models.ViewModels.MemberOverviewViewModel>
 
 @{
-    ViewData["Title"] = "Overview";
+    ViewData["Title"] = "Member Overview";
 }
 
-<h1>Overview</h1>
+<div class="container-fluid py-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Member Overview</h1>
+    </div>
 
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.First().FullName)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.First().NumberOfRegisteredVehicles)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.First().TotalParkingCost)
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.FullName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.NumberOfRegisteredVehicles)
+                                </td>
+                                <td>
+                                    @item.TotalParkingCost.ToString("C", new System.Globalization.CultureInfo("sv-SE"))
+                                </td>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.FullName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NumberOfRegisteredVehicles)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TotalParkingCost)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FullName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.NumberOfRegisteredVehicles)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TotalParkingCost)
-                </td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.MemberId">View Details</a>
-                </td>
-              
-            </tr>
-        }
-    </tbody>
-</table>
-
-
+                                <td class="text-end">
+                                    <a asp-action="Details" asp-route-id="@item.MemberId" class="btn btn-primary btn-sm">View Details</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
