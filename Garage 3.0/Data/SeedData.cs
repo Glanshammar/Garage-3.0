@@ -32,6 +32,41 @@ namespace Garage_3._0.Data
             await AddUserToRoleAsync(admin, "Admin");
             await AddUserToRoleAsync(user, "User");
             await AddUserToRoleAsync(minorUser, "User");
+
+            // Seed parking spots
+            await AddParkingSpotsAsync();
+        }
+
+
+        private static async Task AddParkingSpotsAsync()
+        {
+            if (context.ParkingSpots.Any()) return;
+
+            var parkingSpots = new List<ParkingSpot>
+        {
+            // Ground Floor
+            new ParkingSpot { SpotNumber = "A1", Size = "Small", Location = "Ground Floor - North", IsOccupied = false, ParkingCost = 20.00m },
+            new ParkingSpot { SpotNumber = "A2", Size = "Small", Location = "Ground Floor - West", IsOccupied = false, ParkingCost = 20.00m },
+            new ParkingSpot { SpotNumber = "A3", Size = "Medium", Location = "Ground Floor - East", IsOccupied = false, ParkingCost = 30.00m },
+            new ParkingSpot { SpotNumber = "A4", Size = "Medium", Location = "Ground Floor - South", IsOccupied = false, ParkingCost = 30.00m },
+
+
+            // First Floor 
+            new ParkingSpot { SpotNumber = "1A1", Size = "Small", Location = "First Floor - North", IsOccupied = false, ParkingCost = 15.00m },
+            new ParkingSpot { SpotNumber = "1A2", Size = "Small", Location = "First Floor - West", IsOccupied = false, ParkingCost = 15.00m },
+            new ParkingSpot { SpotNumber = "1A3", Size = "Medium", Location = "First Floor - East", IsOccupied = false, ParkingCost = 25.00m },
+            new ParkingSpot { SpotNumber = "1A4", Size = "Large", Location = "First Floor - South", IsOccupied = false, ParkingCost = 35.00m },
+
+            // Second Floor 
+            new ParkingSpot { SpotNumber = "2A1", Size = "Small", Location = "Second Floor  - North", IsOccupied = false, ParkingCost = 15.00m },
+            new ParkingSpot { SpotNumber = "2A2", Size = "Medium", Location = "Second Floor - West", IsOccupied = false, ParkingCost = 25.00m },
+            new ParkingSpot { SpotNumber = "2A3", Size = "Medium", Location = "Second Floor - East", IsOccupied = false, ParkingCost = 25.00m },
+            new ParkingSpot { SpotNumber = "2A4", Size = "Large", Location = "Second Floor - South", IsOccupied = false, ParkingCost = 35.00m },
+           
+        };
+
+            await context.ParkingSpots.AddRangeAsync(parkingSpots);
+            await context.SaveChangesAsync();
         }
 
         private static async Task AddUserToRoleAsync(ApplicationUser user, string roleName)
