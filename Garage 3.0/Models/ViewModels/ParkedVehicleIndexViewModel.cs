@@ -8,5 +8,7 @@
         public string VehicleTypeName { get; set; }
         public string OwnerName { get; set; }
         public string ParkingSpotNumber { get; set; }
+        public DateTime ArrivalTime { get; set; }
+
     }
 }
