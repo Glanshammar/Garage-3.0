@@ -12,13 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Garage_3._0.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-<<<<<<<< HEAD:Garage 3.0/Migrations/20241125082339_InitialCreate.Designer.cs
-    [Migration("20241125082339_InitialCreate")]
-    partial class InitialCreate
-========
-    [Migration("20241125105231_Initial")]
-    partial class Initial
->>>>>>>> development:Garage 3.0/Migrations/20241125105231_Initial.Designer.cs
+    [Migration("20241125114627_Initi")]
+    partial class Initi
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
